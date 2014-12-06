@@ -10,7 +10,6 @@ public class Gun : MonoBehaviour {
 	public Transform spawn;
 	private LineRenderer tracer;
 
-
 	private float secondsInterval;
 	private float nextShootTime;
 	
