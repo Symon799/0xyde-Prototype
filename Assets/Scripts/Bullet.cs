@@ -11,7 +11,7 @@ public class Bullet : MonoBehaviour {
 
 		if (c.collider.gameObject.CompareTag("Zombie"))
 		{
-			GameObject go = GameObject.Find ("Zombie");
+			GameObject go = c.collider.gameObject;
 			mAI other = (mAI)go.GetComponent (typeof(mAI));
 			other.hurt();
 		}
