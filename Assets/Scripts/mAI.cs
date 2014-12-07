@@ -67,7 +67,7 @@ public class mAI : MonoBehaviour {
 		if (Time.time > attackTime)
 		{
 			// Stop NavMesh agent
-
+			transform.LookAt(leader);
 			// Start attack motion
 			GetComponent<NavMeshAgent> ().ResetPath();
 			anim.SetBool ("attack", true);
