@@ -7,6 +7,11 @@ public class mAI : MonoBehaviour {
 	public float maxDistance = 8;
 	public float minDistance = 2;
 	private Animator anim;
+	private float attackRepeatTime = 1;
+	private float attackTime = 1;
+	public Renderer eyes;
+	
+	public GameObject player;
 
 	private int life = 1;
 
@@ -14,14 +19,14 @@ public class mAI : MonoBehaviour {
 	void Start () 
 	{
 		anim = GetComponent<Animator> ();
+		attackTime = Time.time;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		// Freeze Y axis
-		transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-
+				transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 		AI ();
 	}
 
@@ -52,7 +57,6 @@ public class mAI : MonoBehaviour {
 		anim.SetBool ("attack", false);
 		anim.SetBool ("walk", true);
 
-		Debug.Log("Walk");
 	}
 
 	/// <summary>
@@ -60,13 +64,20 @@ public class mAI : MonoBehaviour {
 	/// </summary>
 	private void attack()
 	{
-		// Stop NavMesh agent
-		GetComponent<NavMeshAgent> ().ResetPath();
+		if (Time.time > attackTime)
+		{
+			// Stop NavMesh agent
 
-		// Start attack motion
-		anim.SetBool ("attack", true);
+			// Start attack motion
+			GetComponent<NavMeshAgent> ().ResetPath();
+			anim.SetBool ("attack", true);
 
-		Debug.Log("Attack");
+			PlayerStats other = (PlayerStats)player.GetComponent (typeof(PlayerStats));
+			other.ApplyDamage(10);
+
+			Debug.Log("Attack");
+			attackTime = Time.time + attackRepeatTime;
+		}
 	}
 
 	/// <summary>
@@ -115,7 +126,7 @@ public class mAI : MonoBehaviour {
 		// Start dead motion
 		anim.SetBool ("alive", false);
 		(gameObject.GetComponent(typeof(CapsuleCollider)) as CapsuleCollider).isTrigger = true;
-
+		eyes.enabled = false;
 		Debug.Log("You've been targeted for termination");
 	}
 }

@@ -29,7 +29,7 @@ public class PlayerStats : MonoBehaviour {
 	/*
 function Dead()
 {
-	RespawnMenuV2.playerIsDead = true; //VERY IMPORTANT! This line was added in tutorial number 19. If you haven't reached that tutorial yet, go ahead and remove it.
+	RespawnMenuV2.playerIsDead = true;
 	Debug.Log("Player Died"); 
 }
 	*/
