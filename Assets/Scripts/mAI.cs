@@ -10,6 +10,12 @@ public class mAI : MonoBehaviour {
 	private float attackRepeatTime = 1;
 	private float attackTime = 1;
 	public Renderer eyes;
+
+	private SphereCollider col;
+	public float fieldOfViewAngle = 110f;
+	private bool playerInSight = false;
+	private bool playerInside = false;
+	private GameObject player2;
 	
 	public GameObject player;
 
@@ -18,7 +24,9 @@ public class mAI : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		player2 = GameObject.FindGameObjectWithTag("Player");
 		anim = GetComponent<Animator> ();
+		col = GetComponent<SphereCollider> ();
 		attackTime = Time.time;
 	}
 	
@@ -26,7 +34,7 @@ public class mAI : MonoBehaviour {
 	void Update () 
 	{
 		// Freeze Y axis
-				transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+		transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 		AI ();
 	}
 
@@ -36,7 +44,17 @@ public class mAI : MonoBehaviour {
 		{
 			if (Vector3.Distance (transform.position, leader.position) >= minDistance) 
 			{
-				walk();
+				if (playerInside)
+				{
+					onDetect();
+
+					if (playerInSight)
+					{
+						walk();
+					}
+				}
+
+
 			}
 			else
 			{
@@ -67,7 +85,7 @@ public class mAI : MonoBehaviour {
 		if (Time.time > attackTime)
 		{
 			// Stop NavMesh agent
-			transform.LookAt(leader);
+			//transform.LookAt(leader);
 			// Start attack motion
 			GetComponent<NavMeshAgent> ().ResetPath();
 			anim.SetBool ("attack", true);
@@ -129,4 +147,52 @@ public class mAI : MonoBehaviour {
 		eyes.enabled = false;
 		Debug.Log("You've been targeted for termination");
 	}
+
+	void OnTriggerEnter (Collider other)
+	{
+		// If the player has entered the trigger sphere...
+		if(other.gameObject == player2)
+		{
+
+			Debug.Log("sight");
+
+
+
+			playerInside = true;
+
+
+		}
+	}
+
+	void onDetect()
+	{
+		Vector3 direction = player2.transform.position - transform.position;
+		float angle = Vector3.Angle(direction, transform.forward);
+		
+		
+		
+			if(angle < fieldOfViewAngle * 0.5f)
+			{
+				Debug.Log("seen");
+				
+				playerInSight = true;
+			}
+			
+
+	}
+
+	void OnTriggerExit (Collider other)
+	{
+		// If the player leaves the trigger zone...
+		if(other.gameObject == player2)
+		{
+			// ... the player is not in sight.
+			playerInSight = false;
+			playerInside = false;
+			GetComponent<NavMeshAgent> ().ResetPath();
+			anim.SetBool ("walk", false);
+			Debug.Log("out");
+		}
+	}
+
 }
