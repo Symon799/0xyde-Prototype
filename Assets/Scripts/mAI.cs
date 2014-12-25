@@ -13,8 +13,7 @@ public class mAI : MonoBehaviour {
 
 	private SphereCollider col;
 	public float fieldOfViewAngle = 110f;
-	private bool playerInSight = false;
-	private bool playerInside = false;
+	private bool playerDetected = false;
 	private GameObject player2;
 	
 	public GameObject player;
@@ -44,17 +43,10 @@ public class mAI : MonoBehaviour {
 		{
 			if (Vector3.Distance (transform.position, leader.position) >= minDistance) 
 			{
-				if (playerInside)
+				if (playerDetected)
 				{
-					onDetect();
-
-					if (playerInSight)
-					{
-						walk();
-					}
+					walk();
 				}
-
-
 			}
 			else
 			{
@@ -148,37 +140,23 @@ public class mAI : MonoBehaviour {
 		Debug.Log("You've been targeted for termination");
 	}
 
-	void OnTriggerEnter (Collider other)
+	void OnTriggerStay (Collider other)
 	{
 		// If the player has entered the trigger sphere...
 		if(other.gameObject == player2)
 		{
-
 			Debug.Log("sight");
 
+			Vector3 direction = player2.transform.position - transform.position;
+			float angle = Vector3.Angle(direction, transform.forward);
 
-
-			playerInside = true;
-
-
-		}
-	}
-
-	void onDetect()
-	{
-		Vector3 direction = player2.transform.position - transform.position;
-		float angle = Vector3.Angle(direction, transform.forward);
-		
-		
-		
 			if(angle < fieldOfViewAngle * 0.5f)
 			{
 				Debug.Log("seen");
 				
-				playerInSight = true;
+				playerDetected = true;
 			}
-			
-
+		}
 	}
 
 	void OnTriggerExit (Collider other)
@@ -187,8 +165,7 @@ public class mAI : MonoBehaviour {
 		if(other.gameObject == player2)
 		{
 			// ... the player is not in sight.
-			playerInSight = false;
-			playerInside = false;
+			playerDetected = false;
 			GetComponent<NavMeshAgent> ().ResetPath();
 			anim.SetBool ("walk", false);
 			Debug.Log("out");
