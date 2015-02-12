@@ -11,7 +11,7 @@ public class mAI : MonoBehaviour {
 	private float attackTime = 1;
 	public Renderer eyes;
 
-	private SphereCollider col;
+	//private SphereCollider col;
 	public float fieldOfViewAngle = 110f;
 	private bool playerDetected = false;
 	private GameObject player2;
@@ -25,7 +25,7 @@ public class mAI : MonoBehaviour {
 	{
 		player2 = GameObject.FindGameObjectWithTag("Player");
 		anim = GetComponent<Animator> ();
-		col = GetComponent<SphereCollider> ();
+		//col = GetComponent<SphereCollider> ();
 		attackTime = Time.time;
 	}
 	
